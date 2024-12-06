@@ -1,4 +1,4 @@
-package ftq.ink.activation;
+package ftq.ink.activation.util;
 
 import ftq.ink.activation.entity.ActivationCode;
 

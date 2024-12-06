@@ -1,6 +1,6 @@
 package ftq.ink.activation.controller;
 
-import ftq.ink.activation.ActivationCodeGenerator;
+import ftq.ink.activation.util.ActivationCodeGenerator;
 import ftq.ink.activation.dao.ActivationCodeRepository;
 import ftq.ink.activation.dao.SubscriptionRepository;
 import ftq.ink.activation.dto.ActivationDto;
@@ -58,7 +58,7 @@ public class ActivationCodeController {
         ActivationCode daoCode = activationCodeRepository.findByContent(activationDto.content);
         if (daoCode != null) {
             if (daoCode.status == ActivationCode.ActivationCodeStatus.ACTIVATED) {
-                return "激活码已激活";
+                return "激活码已经被使用";
             } else {
                 daoCode.status = ActivationCode.ActivationCodeStatus.ACTIVATED;
                 daoCode.activateTime = new Date();

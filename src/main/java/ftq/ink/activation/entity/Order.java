@@ -6,6 +6,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
+    public String deviceName;
     public String deviceInfo;
     public Integer subscriptionId;
     public Integer activationCodeId;

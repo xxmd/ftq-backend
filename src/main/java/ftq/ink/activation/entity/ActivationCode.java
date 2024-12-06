@@ -15,6 +15,7 @@ public class ActivationCode extends BaseEntity {
     @Enumerated(EnumType.STRING)
     public ActivationCodeStatus status = ActivationCodeStatus.CREATED;
     public int subscriptionId;
+    public int platformId;
     public Date exportTime;
     public Date activateTime;
 }
