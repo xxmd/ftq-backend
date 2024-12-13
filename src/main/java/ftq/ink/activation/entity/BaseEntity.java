@@ -10,9 +10,10 @@ import java.util.Date;
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
+    public Long id;
 
     @CreationTimestamp
+    @Column
     public Date createTime;
 
     @UpdateTimestamp

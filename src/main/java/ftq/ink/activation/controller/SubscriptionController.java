@@ -1,6 +1,7 @@
 package ftq.ink.activation.controller;
 
 import ftq.ink.activation.dao.SubscriptionRepository;
+import ftq.ink.activation.entity.ApiResponse;
 import ftq.ink.activation.entity.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +26,9 @@ public class SubscriptionController {
      * @return
      */
     @GetMapping("/findAll")
-    public ResponseEntity findAll() {
+    public ApiResponse findAll() {
         List<Subscription> subscriptionList = subscriptionRepository.findAll();
         subscriptionList = subscriptionList.stream().sorted(Comparator.comparing(it -> it.price)).collect(Collectors.toList());
-        return new ResponseEntity(subscriptionList, HttpStatus.OK);
+        return ApiResponse.success(subscriptionList);
     }
 }

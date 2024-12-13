@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ActivationCodeRepository extends JpaRepository<ActivationCode, Integer> {
+public interface ActivationCodeRepository extends JpaRepository<ActivationCode, Long> {
     ActivationCode findByContent(String content);
 
     @Query("SELECT code FROM ActivationCode code WHERE code.subscriptionId = :subscriptionId AND code.status = :status ORDER BY code.createTime ASC")
-    List<ActivationCode> findCreatedCode(@Param("subscriptionId") int subscriptionId, @Param("status") ActivationCode.ActivationCodeStatus status, Pageable pageable);
+    List<ActivationCode> findCreatedCode(@Param("subscriptionId") Long subscriptionId, @Param("status") ActivationCode.ActivationCodeStatus status, Pageable pageable);
 }

@@ -1,13 +1,14 @@
 package ftq.ink.activation.controller;
 
+import ftq.ink.activation.entity.ApiResponse;
 import ftq.ink.activation.util.ActivationCodeGenerator;
 import ftq.ink.activation.dao.ActivationCodeRepository;
 import ftq.ink.activation.dao.SubscriptionRepository;
 import ftq.ink.activation.dto.ActivationDto;
 import ftq.ink.activation.entity.ActivationCode;
 import ftq.ink.activation.service.ActivationCodeService;
-import ftq.ink.activation.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,8 +29,6 @@ public class ActivationCodeController {
     private ActivationCodeRepository activationCodeRepository;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
-    @Autowired
-    private OrderService orderService;
 
     /**
      * 批量生成激活码
@@ -37,37 +37,34 @@ public class ActivationCodeController {
      */
     @PostMapping("/batchGene")
     @Transactional
-    public String batchGene(@Valid @RequestBody ActivationDto activationDto) {
+    public ApiResponse batchGene(@Valid @RequestBody ActivationDto activationDto) {
         List<ActivationCode> codeList = ActivationCodeGenerator.batchGeneActivationCode(activationDto.subscriptionId, activationDto.geneCount);
         activationCodeRepository.saveAll(codeList);
-        return "插入成功";
+        return ApiResponse.success("插入成功");
     }
 
     @GetMapping("/findByContent")
-    public Object findByContent(@RequestParam String codeContent) {
+    public ApiResponse findByContent(@RequestParam String codeContent) {
         ActivationCode daoCode = activationCodeRepository.findByContent(codeContent);
         if (daoCode == null) {
-            return String.format("激活码: %s 不存在", codeContent);
+            return ApiResponse.error(String.format("激活码: %s 不存在", codeContent));
         }
-        return daoCode;
+        return ApiResponse.success(daoCode);
     }
 
     @PostMapping("/activate")
     @Transactional
-    public String activate(@RequestBody ActivationDto activationDto) {
-        ActivationCode daoCode = activationCodeRepository.findByContent(activationDto.content);
-        if (daoCode != null) {
-            if (daoCode.status == ActivationCode.ActivationCodeStatus.ACTIVATED) {
-                return "激活码已经被使用";
+    public ApiResponse activate(@RequestBody ActivationDto activationDto) {
+        Optional<ActivationCode> daoCode = activationCodeRepository.findById(activationDto.activationCodeId);
+        if (daoCode.isPresent()) {
+            if (daoCode.get().status == ActivationCode.ActivationCodeStatus.ACTIVATED) {
+                return ApiResponse.error("激活码已被使用");
             } else {
-                daoCode.status = ActivationCode.ActivationCodeStatus.ACTIVATED;
-                daoCode.activateTime = new Date();
-                activationCodeRepository.save(daoCode);
-                orderService.save(daoCode, activationDto.deviceInfo);
-                return "激活成功";
+                activationCodeService.activate(daoCode.get(), activationDto.device);
+                return ApiResponse.success("激活成功");
             }
         } else {
-            return String.format("激活码: %s 不存在", activationDto.content);
+            return ApiResponse.error(String.format("激活码: %s 不存在", activationDto.content));
         }
     }
 
@@ -84,4 +81,15 @@ public class ActivationCodeController {
         return codeList.stream().map(it -> it.content).collect(Collectors.joining(","));
     }
 
+
+    @GetMapping("/findOne")
+    public Object findOne(@RequestBody ActivationCode activationCode) {
+        Example<ActivationCode> example = Example.of(activationCode);
+        Optional<ActivationCode> daoCode = activationCodeRepository.findOne(example);
+        if (daoCode.isPresent()) {
+            return daoCode;
+        } else {
+            return String.format("激活码: %s 不存在", activationCode.content);
+        }
+    }
 }
