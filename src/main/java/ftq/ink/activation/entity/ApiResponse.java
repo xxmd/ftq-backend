@@ -3,7 +3,6 @@ package ftq.ink.activation.entity;
 import org.springframework.http.HttpStatus;
 
 public class ApiResponse<T> {
-
     // 响应状态码
     private int code;
 

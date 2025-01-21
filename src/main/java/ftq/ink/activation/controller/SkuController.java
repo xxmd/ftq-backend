@@ -5,11 +5,9 @@ import ftq.ink.activation.entity.ApiResponse;
 import ftq.ink.activation.entity.Sku;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,18 +19,13 @@ public class SkuController {
 
 
     /**
-     * 批量生成激活码
+     * 通过订阅 id 获取符合条件的 sku 集合
      *
      * @return
      */
-    @PostMapping("/findAllByExample")
-    public ApiResponse findAllByExample(@RequestBody Sku sku) {
-        Example<Sku> example = Example.of(sku);
-        Optional<Sku> skuDao = skuRepository.findOne(example);
-        if (skuDao.isPresent()) {
-            return ApiResponse.success(skuDao.get());
-        } else {
-            return ApiResponse.error("sku不存在");
-        }
+    @GetMapping("/findAllBySubscriptionId")
+    public ApiResponse findAllBySubscriptionId(@RequestParam Long subscriptionId) {
+        List<Sku> skuList = skuRepository.findAllBySubscriptionId(subscriptionId);
+        return ApiResponse.success(skuList);
     }
 }

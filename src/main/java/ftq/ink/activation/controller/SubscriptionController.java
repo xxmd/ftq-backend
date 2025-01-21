@@ -19,7 +19,6 @@ public class SubscriptionController {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
-
     /**
      * 批量生成激活码
      *
