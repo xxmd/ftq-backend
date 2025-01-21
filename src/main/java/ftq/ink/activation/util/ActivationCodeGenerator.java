@@ -1,6 +1,7 @@
 package ftq.ink.activation.util;
 
 import ftq.ink.activation.entity.ActivationCode;
+import ftq.ink.activation.entity.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,10 @@ public class ActivationCodeGenerator {
 
     public static ActivationCode geneActivationCode(Long subscriptionId) {
         ActivationCode activationCode = new ActivationCode();
-        activationCode.subscriptionId = subscriptionId;
-        activationCode.content = UUID.randomUUID().toString().replace("-", "");
+        Subscription subscription = new Subscription();
+        subscription.id = subscriptionId;
+        activationCode.subscription = subscription;
+        activationCode.content = UUID.randomUUID().toString();
         return activationCode;
     }
 }

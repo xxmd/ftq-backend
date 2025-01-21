@@ -40,7 +40,7 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(500, message, null);
+        return new ApiResponse<>(HttpStatus.OK.value(), message, null);
     }
 
     // Getter 和 Setter
