@@ -1,4 +1,6 @@
 spring:
+  jackson:
+    time-zone: GMT+8
   datasource:
     url: jdbc:mysql://ftq.ink:3306/ftq?useSSL=false&serverTimezone=Asia/Shanghai
     username: root

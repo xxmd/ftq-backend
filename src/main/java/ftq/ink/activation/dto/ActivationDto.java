@@ -3,6 +3,8 @@ package ftq.ink.activation.dto;
 import ftq.ink.activation.anno.ValidSubscriptionId;
 import ftq.ink.activation.entity.Device;
 
+import javax.persistence.OneToOne;
+
 public class ActivationDto {
     public Long activationCodeId;
     @ValidSubscriptionId

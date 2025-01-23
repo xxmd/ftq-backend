@@ -6,5 +6,5 @@ import ftq.ink.activation.entity.Sku;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeviceRepository extends JpaRepository<Device, Long> {
-    ActivationCode findByAndroidId(String androidId);
+    Device findByAndroidId(String androidId);
 }

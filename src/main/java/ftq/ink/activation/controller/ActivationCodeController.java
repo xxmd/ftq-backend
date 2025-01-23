@@ -1,6 +1,8 @@
 package ftq.ink.activation.controller;
 
+import ftq.ink.activation.dao.DeviceRepository;
 import ftq.ink.activation.entity.ApiResponse;
+import ftq.ink.activation.entity.Device;
 import ftq.ink.activation.util.ActivationCodeGenerator;
 import ftq.ink.activation.dao.ActivationCodeRepository;
 import ftq.ink.activation.dao.SubscriptionRepository;
@@ -29,6 +31,8 @@ public class ActivationCodeController {
     private ActivationCodeRepository activationCodeRepository;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private DeviceRepository deviceRepository;
 
     /**
      * 批量生成激活码
@@ -54,17 +58,20 @@ public class ActivationCodeController {
 
     @PostMapping("/activate")
     @Transactional
-    public ApiResponse activate(@RequestBody ActivationDto activationDto) {
-        Optional<ActivationCode> daoCode = activationCodeRepository.findById(activationDto.activationCodeId);
-        if (daoCode.isPresent()) {
-            if (daoCode.get().status == ActivationCode.ActivationCodeStatus.ACTIVATED) {
-                return ApiResponse.error("激活码已被使用");
+    public ApiResponse activate(@RequestBody ActivationCode activationCode) {
+        Optional<ActivationCode> codeOptional = activationCodeRepository.findById(activationCode.id);
+        if (codeOptional.isPresent()) {
+            if (codeOptional.get().status == ActivationCode.ActivationCodeStatus.ACTIVATED) {
+                return ApiResponse.error("该激活码已被使用");
             } else {
-                activationCodeService.activate(daoCode.get(), activationDto.device);
-                return ApiResponse.success("激活成功");
+                ActivationCode daoActivationCode = codeOptional.get();
+                Device daoDevice = deviceRepository.findByAndroidId(activationCode.device.androidId);
+                daoActivationCode.device = daoDevice == null ? activationCode.device : daoDevice;
+                activationCodeService.activate(daoActivationCode);
+                return ApiResponse.success("");
             }
         } else {
-            return ApiResponse.error(String.format("激活码: %s 不存在", activationDto.content));
+            return ApiResponse.error(String.format("激活码: %s 不存在"));
         }
     }
 

@@ -32,6 +32,6 @@ public class ActivationCode extends BaseEntity {
     @Column(name = "device_id", insertable = false, updatable = false)
     public Long deviceId;
     // 激活设备
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL) // 添加 CascadeType.ALL
     public Device device;
 }

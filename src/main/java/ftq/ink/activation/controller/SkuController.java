@@ -17,7 +17,6 @@ public class SkuController {
     @Autowired
     private SkuRepository skuRepository;
 
-
     /**
      * 通过订阅 id 获取符合条件的 sku 集合
      *

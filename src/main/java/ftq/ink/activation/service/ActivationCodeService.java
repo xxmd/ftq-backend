@@ -17,16 +17,9 @@ public class ActivationCodeService {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    public void activate(ActivationCode activationCode, Device device) {
+    public void activate(ActivationCode activationCode) {
         activationCode.status = ActivationCode.ActivationCodeStatus.ACTIVATED;
         activationCode.activateTime = new Date();
-        ActivationCode daoDevice = deviceRepository.findByAndroidId(device.androidId);
-        if (daoDevice != null) {
-            activationCode.deviceId = device.id;
-        } else {
-            Device savedDevice = deviceRepository.save(device);
-            activationCode.deviceId = savedDevice.id;
-        }
         activationCodeRepository.save(activationCode);
     }
 }

@@ -40,10 +40,9 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(HttpStatus.OK.value(), message, null);
+        return new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), message, null);
     }
 
-    // Getter 和 Setter
     public int getCode() {
         return code;
     }
