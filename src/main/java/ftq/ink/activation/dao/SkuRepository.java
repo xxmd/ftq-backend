@@ -8,6 +8,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface SkuRepository extends JpaRepository<Sku, Long> {
-    @Query("SELECT s FROM Sku s WHERE s.subscriptionId = :subscriptionId")
     List<Sku> findAllBySubscriptionId(@Param("subscriptionId") Long subscriptionId);
 }

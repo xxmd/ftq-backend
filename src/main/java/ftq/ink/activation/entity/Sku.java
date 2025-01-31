@@ -14,4 +14,5 @@ public class Sku extends BaseEntity {
     @OneToOne(fetch = FetchType.EAGER)
     // 关联的平台实体类
     public Platform platform;
+    public Boolean enable;
 }

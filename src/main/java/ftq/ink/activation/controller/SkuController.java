@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sku")
@@ -25,6 +26,7 @@ public class SkuController {
     @GetMapping("/findAllBySubscriptionId")
     public ApiResponse findAllBySubscriptionId(@RequestParam Long subscriptionId) {
         List<Sku> skuList = skuRepository.findAllBySubscriptionId(subscriptionId);
+        skuList = skuList.stream().filter(sku -> sku.enable).collect(Collectors.toList());
         return ApiResponse.success(skuList);
     }
 }
